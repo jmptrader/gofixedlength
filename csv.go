@@ -10,20 +10,20 @@ import (
 // should resemble:
 //
 // 	type SomeType struct {
-// 		ValA      string        `csv:"1"`
-//		ValB      int           `csv:"2"`
-//		ValC      *EmbeddedType `csv:"3" csvsplit:"~"`
+// 		ValA      string        `csv:"0"`
+//		ValB      int           `csv:"1"`
+//		ValC      *EmbeddedType `csv:"2" csvsplit:"~"`
 //		WholeLine string        `csv:"raw"`
 // 	}
 //	type EmbeddedType struct {
-//		ValX string `csv:"1"`
-//		ValY string `csv:"2"`
+//		ValX string `csv:"0"`
+//		ValY string `csv:"1"`
 //	}
 //
 //	var out SomeType
 //	err := Unmarshal("A,2,X~Y", "," &out)
 //
-// String offsets are one based, not zero based.
+// String offsets are zero based.
 func UnmarshalCsv(data string, sep string, v interface{}) error {
 	//debugStruct(v)
 	var val reflect.Value
@@ -61,7 +61,7 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 		}
 
 		f, _ := strconv.Atoi(cField)
-		f--
+		//f--
 
 		// Sanity check range before dying miserably
 		if f < 0 || f > len(parts) {

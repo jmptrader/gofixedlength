@@ -10,21 +10,21 @@ const (
 )
 
 type basicParseTest struct {
-	NumberA int    `fixed:"1-5"`
-	NumberB int    `fixed:"3-5"` // test overlap
-	StringC string `fixed:"11-15"`
-	StringD string `fixed:"30-35"` // should fail
+	NumberA int    `fixed:"0-5"`
+	NumberB int    `fixed:"2-5"` // test overlap
+	StringC string `fixed:"10-15"`
+	StringD string `fixed:"29-35"` // should fail
 }
 
 type layeredParseTest struct {
-	DateField   *dateStruct `fixed:"1-8"`
-	StringAfter string      `fixed:"9-10"`
+	DateField   *dateStruct `fixed:"0-8"`
+	StringAfter string      `fixed:"8-10"`
 }
 
 type dateStruct struct {
-	Y int `fixed:"1-4"`
-	M int `fixed:"5-6"`
-	D int `fixed:"7-8"`
+	Y int `fixed:"0-4"`
+	M int `fixed:"4-6"`
+	D int `fixed:"6-8"`
 }
 
 func TestBasicParsing(t *testing.T) {
