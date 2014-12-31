@@ -26,5 +26,8 @@ resemble:
 String offsets are zero based.
 
 ##European-styled numbers
-To parse documents that use a comma "," instead of the decimal point, just set to true the corresponding global variable:
-`gofixedfield.DECIMAL_COMMA = true`
+To parse documents that use a comma "," instead of the decimal point, just set to `true` the corresponding global variable:
+
+	func init() {
+		gofixedfield.DECIMAL_COMMA = true
+	}
