@@ -4,7 +4,7 @@
 [![GoDoc](https://godoc.org/github.com/qrawl/gofixedfield?status.png)](https://godoc.org/github.com/qrawl/gofixedfield)
 
 Go library to deal with extracting fixed field form values using struct tags.  
-This is a fork of @jbuchbinder's GOFIXEDFIELD. The only noticeable change is that I prefer zero-based character count.
+This is a fork of [@jbuchbinder](https://github.com/jbuchbinder)'s GOFIXEDFIELD. The only noticeable change is that I prefer zero-based character count.
 
 ##Quickstart
 
