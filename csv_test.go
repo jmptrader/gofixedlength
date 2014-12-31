@@ -1,8 +1,6 @@
 package gofixedfield
 
-import (
-	"testing"
-)
+import "testing"
 
 const (
 	csvBasicParseTestString   = "1,2,ABC,XYZ"
@@ -10,23 +8,23 @@ const (
 )
 
 type csvBasicParseTest struct {
-	NumberA int    `csv:"1"`
-	NumberB int    `csv:"2"`
-	StringC string `csv:"3"`
-	StringD string `csv:"4"`
+	NumberA int    `csv:"0"`
+	NumberB int    `csv:"1"`
+	StringC string `csv:"2"`
+	StringD string `csv:"3"`
 	RawLine string `csv:"raw"`
 }
 
 type csvLayeredParseTest struct {
-	DateField   *csvDateStruct `csv:"1" csvsplit:"-"`
-	StringAfter string         `csv:"2"`
+	DateField   *csvDateStruct `csv:"0" csvsplit:"-"`
+	StringAfter string         `csv:"1"`
 	RawLine     string         `csv:"raw"`
 }
 
 type csvDateStruct struct {
-	Y int `csv:"1"`
-	M int `csv:"2"`
-	D int `csv:"3"`
+	Y int `csv:"0"`
+	M int `csv:"1"`
+	D int `csv:"2"`
 }
 
 func TestCsvBasicParsing(t *testing.T) {
