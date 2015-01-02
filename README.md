@@ -30,5 +30,5 @@ String offsets are zero based.
 To parse documents that use a comma "," instead of the decimal point, just set to `true` the corresponding global variable:
 
 	func init() {
-		gofixedfield.DECIMAL_COMMA = true
+		gofixedlength.DECIMAL_COMMA = true
 	}
