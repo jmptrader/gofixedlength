@@ -33,10 +33,10 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 		val = reflect.ValueOf(v).Elem()
 	}
 
-	//fmt.Println("UnmarshalCsv called with separator " + sep)
+	//fmt.Println("UnmarshalCsv called with separator " + sep) // Debug code
 	parts := strings.Split(data, sep)
 
-	//fmt.Printf("Found %d fields\n", val.NumField())
+	//fmt.Printf("Found %d fields\n", val.NumField()) // Debug code
 	for i := 0; i < val.NumField(); i++ {
 		typeField := val.Type().Field(i)
 		tag := typeField.Tag
@@ -44,7 +44,7 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 		cField := tag.Get("csv")
 		cSep := tag.Get("csvsplit")
 		if len(cField) < 1 || len(cField) > 4 {
-			//fmt.Println("Bailing out, invalid csv tag ", cField)
+			//fmt.Println("Bailing out, invalid csv tag ", cField) // Debug code
 			continue
 		}
 
@@ -65,20 +65,20 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 
 		// Sanity check range before dying miserably
 		if f < 0 || f > len(parts) {
-			//fmt.Printf("Failed sanity check for f = %d, len(parts) = %d\n", f, len(parts))
+			//fmt.Printf("Failed sanity check for f = %d, len(parts) = %d\n", f, len(parts)) // Debug code
 			continue
 		}
 
 		s := parts[f]
-		//fmt.Printf("s == %s\n", s)
+		//fmt.Printf("s == %s\n", s) // Debug code
 
-		//fmt.Printf("Field found of type %s\n", typeField.Type.Kind())
+		//fmt.Printf("Field found of type %s\n", typeField.Type.Kind()) // Debug code
 
 		switch typeField.Type.Kind() {
 		case reflect.Bool:
 			v, err := strconv.ParseBool(s)
 			if err != nil {
-				//fmt.Println(err.Error())
+				//fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetBool(v)
@@ -89,7 +89,7 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 			}
 			v, err := strconv.ParseFloat(s, 32)
 			if err != nil {
-				//fmt.Println(err.Error())
+				//fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetFloat(v)
@@ -100,57 +100,57 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 			}
 			v, err := strconv.ParseFloat(s, 64)
 			if err != nil {
-				//fmt.Println(err.Error())
+				//fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetFloat(v)
 			break
 		case reflect.String:
-			//fmt.Printf("Found string value '%s'\n", s)
+			//fmt.Printf("Found string value '%s'\n", s) // Debug code
 			val.Field(i).SetString(s)
 			break
 		case reflect.Int8:
-			//fmt.Printf("Found value '%s'\n", s)
+			//fmt.Printf("Found value '%s'\n", s) // Debug code
 			v, err := strconv.ParseInt(s, 10, 8)
 			if err != nil {
-				//fmt.Println(err.Error())
+				//fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetInt(v)
 			break
 		case reflect.Int32:
-			//fmt.Printf("Found value '%s'\n", s)
+			//fmt.Printf("Found value '%s'\n", s) // Debug code
 			v, err := strconv.ParseInt(s, 10, 32)
 			if err != nil {
-				//fmt.Println(err.Error())
+				//fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetInt(v)
 			break
 		case reflect.Int, reflect.Int64:
-			//fmt.Printf("Found value '%s'\n", s)
+			//fmt.Printf("Found value '%s'\n", s) // Debug code
 			v, err := strconv.ParseInt(s, 10, 64)
 			if err != nil {
-				//fmt.Println(err.Error())
+				//fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetInt(v)
 			break
 		case reflect.Uint:
-			//fmt.Printf("Found uint value '%s'\n", s)
+			//fmt.Printf("Found uint value '%s'\n", s) // Debug code
 			v, err := strconv.ParseUint(s, 10, 64)
 			if err != nil {
-				//fmt.Println(err.Error())
+				//fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetUint(v)
 			break
 		case reflect.Ptr, reflect.Struct:
 			if cSep == "" {
-				//fmt.Println("No csvsplit defined")
+				//fmt.Println("No csvsplit defined") // Debug code
 				continue
 			}
-			//fmt.Printf("Found ptr/str value '%s'\n", s)
+			//fmt.Printf("Found ptr/str value '%s'\n", s) // Debug code
 
 			// Handle embedded objects by recursively parsing
 			// the object with the range we passed.
@@ -160,11 +160,11 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 			}
 			err := UnmarshalCsv(s, cSep, val.Field(i).Interface())
 			if err != nil {
-				//fmt.Println(err.Error())
+				//fmt.Println(err.Error()) // Debug code
 			}
 			break
 		default:
-			//fmt.Println("Found unknown value '%s'", s)
+			//fmt.Println("Found unknown value '%s'", s) // Debug code
 			break
 		}
 	}
