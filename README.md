@@ -1,7 +1,7 @@
 # GoFixedLength 
 
-[![Build Status](https://secure.travis-ci.org/qrawl/gofixedfield.png)](http://travis-ci.org/qrawl/gofixedfield)
-[![GoDoc](https://godoc.org/github.com/qrawl/gofixedfield?status.png)](https://godoc.org/github.com/qrawl/gofixedfield)
+[![Build Status](https://secure.travis-ci.org/qrawl/gofixedlength.png)](http://travis-ci.org/qrawl/gofixedlength)
+[![GoDoc](https://godoc.org/github.com/qrawl/gofixedlength?status.png)](https://godoc.org/github.com/qrawl/gofixedlength)
 
 Go library to deal with extracting fixed field form values using struct tags.  
 This is a fork of [@jbuchbinder](https://github.com/jbuchbinder)'s GOFIXEDFIELD. The only noticeable change is that I prefer zero-based character count.
