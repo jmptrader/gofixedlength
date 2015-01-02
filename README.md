@@ -1,4 +1,4 @@
-# GoFixedField 
+# GoFixedLength 
 
 [![Build Status](https://secure.travis-ci.org/qrawl/gofixedfield.png)](http://travis-ci.org/qrawl/gofixedfield)
 [![GoDoc](https://godoc.org/github.com/qrawl/gofixedfield?status.png)](https://godoc.org/github.com/qrawl/gofixedfield)
