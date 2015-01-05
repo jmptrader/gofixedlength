@@ -1,4 +1,4 @@
-package gofixedfield
+package gofixedlength
 
 import (
 	"reflect"
