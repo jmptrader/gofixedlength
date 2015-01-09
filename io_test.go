@@ -3,7 +3,7 @@ package gofixedlength
 import "testing"
 
 func TestRecordsFromFile(t *testing.T) {
-	s, err := RecordsFromFile("./test.txt", EOL_UNIX)
+	s, err := RecordsFromFile("./test.txt", EOL_DOS)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
