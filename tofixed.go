@@ -25,25 +25,26 @@ type Line []rune
 // 	type SomeType struct {
 // 		ValA string        `fixed:"0-10"`
 //		ValB int           `fixed:"10-20"`
-//		ValC *EmbeddedType `fixed:"20-50"`
-//		ValD time.Time     `fixed:"50-60,2006-01-02"`
-//		ValE float         `fixed:"60-70,2"`
+//		ValC time.Time     `fixed:"20-30,2006-01-02"`
+//		ValD float         `fixed:"30-40,3"`
 // 	}
-//	type EmbeddedType struct {
-//		ValX string `fixed:"0-7"`
-//		ValY string `fixed:"7-30"`
+//
+//	myStruct := SomeType{
+//		"this",
+//		12345,
+//		"2015-01-14",
+//		123.1234,
 //	}
 //
-//	myStruct := SomeType {"this", "is", {"This", "is an embedded struct"}}
-//
 //	var out string
-//	err := Marshal("some string here", &out)
+//	err := Marshal(myStruct)
+//	// out == "this      00000123452015-01-14000123.123"
 //
 // String offsets are zero based.
 // Field filling is based on data type: for text types it will be spaces,
 // while numbers will be right-aligned and filled with zeroes.
 // Floating point-values are printed with the specified number of decimals (two by default).
-// time.Time fields are printed in the specified format.
+// time.Time fields are printed in the specified layout.
 func Marshal(v interface{}) (string, error) {
 	var line Line // Build a rune array the length the output line is supposed to be
 	line = make([]rune, LineLength(v))

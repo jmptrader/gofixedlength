@@ -8,7 +8,7 @@ This is a fork of [@jbuchbinder](https://github.com/jbuchbinder)'s GOFIXEDFIELD.
 
 ##Quickstart
 
-Unmarshal unmarshals string data into an annotated interface. This should
+**Unmarshal** unmarshals string data into an annotated interface. This should
 resemble:
 
 	type SomeType struct {
@@ -23,6 +23,33 @@ resemble:
 
 	var out SomeType
 	err := Unmarshal("some string here", &out)
+
+**Marshal** marshals struct data into a fixed-lenght formatted string.
+
+ 	type SomeType struct {
+ 		ValA string        `fixed:"0-10"`
+		ValB int           `fixed:"10-20"`
+		ValC time.Time     `fixed:"20-30,2006-01-02"`
+		ValD float         `fixed:"30-40,3"`
+ 	}
+
+	myStruct := SomeType{
+		"this",
+		12345,
+		"2015-01-14",
+		123.1234,
+	}
+
+	var out string
+	err := Marshal(myStruct)
+	// out == "this      00000123452015-01-14000123.123"
+
+String offsets are zero based.  
+Field filling is based on data type: for text types it will be spaces,
+while numbers will be right-aligned and filled with zeroes.  
+Floating point-values are printed with the specified number of decimals (two by default).  
+time.Time fields are printed in the specified layout.
+
 
 String offsets are zero based.
 
