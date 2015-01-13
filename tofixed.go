@@ -45,8 +45,7 @@ type Line []rune
 // Floating point-values are printed with two decimal positions by default.
 // TODO: Handle overlap
 // TODO: Handle pointers
-func Marshal(v interface{}, out string) error {
-	line := NewLine()
+func Marshal(v interface{}) (string, error) {
 	var line Line // Build a rune array the length the output line is supposed to be
 	line = make([]rune, LineLength(v))
 	//debugStruct(v)
@@ -60,9 +59,7 @@ func Marshal(v interface{}, out string) error {
 			val = reflect.ValueOf(v).Elem()
 		}
 	*/
-	log.Printf("Found %d fields\n", val.NumField()) // Debug code
 	for i := 0; i < val.NumField(); i++ {
-		log.Println("Attacco field n.", i)
 		typeField := val.Type().Field(i)
 		tag := typeField.Tag
 
@@ -75,7 +72,6 @@ func Marshal(v interface{}, out string) error {
 		cBookend := strings.Split(cRange, "-")
 		if len(cBookend) != 2 {
 			// If we don't have two values, skip
-			log.Println("Two tag values not found") // Debug code
 			continue
 		}
 
@@ -85,13 +81,10 @@ func Marshal(v interface{}, out string) error {
 		/*
 			// Sanity check range before dying miserably
 			if b < 0 || e > len(v) {
-				log.Printf("Failed sanity check for b = %d, e = %d, len(data) = %d\n", b, e, len(v)) // Debug code
 				continue
 			}
 		*/
 		fieldLength := e - b
-
-		log.Printf("Field found of type %s\n", typeField.Type.Kind()) // Debug code
 
 		//log.Println("CHE C'E QUA DENTRO?", reflect.ValueOf(v).Field(i))
 
@@ -105,7 +98,6 @@ func Marshal(v interface{}, out string) error {
 						out.WriteString(fmt.Sprintf(format, '0'))
 					}
 			*/
-
 			break
 		case reflect.Float32, reflect.Float64:
 			// cFormat is the number of decimals
@@ -119,14 +111,13 @@ func Marshal(v interface{}, out string) error {
 				log.Printf("This float number (%v) seems to be too big for output length (%v).\n", integerPart, integerPartLength)
 			}
 			format := fmt.Sprintf("%%0%d.%df", fieldLength, decimals)
-			log.Println("Formato:", format)
 			outstring := fmt.Sprintf(format, reflect.ValueOf(v).Field(i).Float()) // Doesn't check if the source float is too long
 			if DECIMAL_COMMA {
 				outstring = strings.Replace(outstring, ".", ",", 1)
 			}
 			err = line.WriteString(outstring, b, e)
 			if err != nil {
-				return err
+				return line.String(), err
 			}
 			break
 		case reflect.String:
@@ -135,34 +126,30 @@ func Marshal(v interface{}, out string) error {
 			outstring = outstring[0:fieldLength]
 			err := line.WriteString(outstring, b, e)
 			if err != nil {
-				return err
+				return line.String(), err
 			}
 			break
 		case reflect.Int8, reflect.Int32, reflect.Int, reflect.Int64, reflect.Uint:
 			format := fmt.Sprintf("%%0%dv", fieldLength)
-			log.Println("Formato:", format)
 			outstring := fmt.Sprintf(format, reflect.ValueOf(v).Field(i).Int())
 			err := line.WriteString(outstring, b, e)
 			if err != nil {
-				return err
+				return line.String(), err
 			}
 			break
 		case reflect.Ptr, reflect.Struct:
-			log.Printf("Found ptr/str value '%s'\n", val.Field(i)) // Debug code
 			if typeField.Type == reflect.TypeOf(time.Time{}) {
 				// cFormat is the time.Format() format
-				log.Println("Found time.Time object") // Debug code
 				if len(cFormat) != fieldLength {
 					log.Println("cFormat for this time.Time object doesn't match the field length") // Maybe this kind of parsing error check should be done elsewhere
 				}
 				/*
-					log.Println("Formato:", cFormat)
-					fmt.Println("PIJATI QUESTA", val.Field(i))
-					//outstring := reflect.ValueOf(v).Field(i).
-						out.WriteString(val.Field(i).Format(cFormat))
+					outstring:=time.Parse(cFormat, val.Field(i))
+						fmt.Println("PIJATI QUESTA", val.Field(i))
+						//outstring := reflect.ValueOf(v).Field(i).
+							out.WriteString(val.Field(i).Format(cFormat))
 				*/
 			} else {
-				log.Printf("Found ptr/str value '%s'\n", val.Field(i)) // Debug code
 
 				// Handle embedded objects by recursively parsing
 				// the object with the range we passed.
@@ -170,19 +157,21 @@ func Marshal(v interface{}, out string) error {
 					// Initialize pointer to avoid panic
 					val.Field(i).Set(reflect.New(val.Field(i).Type().Elem()))
 				}
-				err := Marshal(val.Field(i).Interface(), out)
+				marshalledStruct, err := Marshal(val.Field(i).Interface())
 				if err != nil {
-					log.Println(err.Error()) // Debug code
+					return line.String(), err
+				}
+				err = line.WriteString(marshalledStruct, 0, line.Length())
+				if err != nil {
+					return line.String(), err
 				}
 			}
 			break
 		default:
-			log.Println("Found unknown value '%s'", v) // Debug code
 			break
 		}
 	}
-	out = line.String()
-	return nil
+	return line.String(), nil
 }
 
 func Pow(a, b int) int {
@@ -259,9 +248,4 @@ func (l Line) Length() int {
 
 func (l Line) String() string {
 	return string(l)
-}
-
-func NewLine(v interface{}, initialText string) Line {
-
-	return
 }

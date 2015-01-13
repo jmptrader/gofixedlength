@@ -1,50 +1,59 @@
 package gofixedlength
 
 import (
-	"log"
 	"testing"
 	"time"
 )
 
 // Basic struct, valid
 type testStruct1 struct {
-	NumberA int    `fixed:"0-5"`
-	NumberB int    `fixed:"5-10"`
-	StringC string `fixed:"10-15"`
-	StringD string `fixed:"15-35"`
+	NumberA        int    `fixed:"0-5"`
+	NumberB        int    `fixed:"5-10"`
+	StringC        string `fixed:"10-15"`
+	StringD        string `fixed:"15-35"`
+	Length         int
+	ExpectedResult string
 }
 
 // Basic struct, fields randomized, valid
 type testStruct2 struct {
-	StringD string `fixed:"15-35"`
-	NumberA int    `fixed:"0-5"`
-	StringC string `fixed:"10-15"`
-	NumberB int    `fixed:"5-10"`
+	StringD        string `fixed:"15-35"`
+	NumberA        int    `fixed:"0-5"`
+	StringC        string `fixed:"10-15"`
+	NumberB        int    `fixed:"5-10"`
+	Length         int
+	ExpectedResult string
 }
 
 // Struct containing formatted date and float, valid
 type testStruct3 struct {
-	Uno     string    `fixed:"0-10"`
-	Due     int       `fixed:"10-20"`
-	Tre     time.Time `fixed:"20-30,2015-10-31"`
-	Quattro string    `fixed:"30-40"`
-	Cinque  float32   `fixed:"40-50,2"`
+	Uno            string    `fixed:"0-10"`
+	Due            int       `fixed:"10-20"`
+	Tre            time.Time `fixed:"20-30,2006-01-02"`
+	Quattro        string    `fixed:"30-40"`
+	Cinque         float32   `fixed:"40-50,2"`
+	Length         int
+	ExpectedResult string
 }
 
 // Basic struct with holes, valid
 type testStruct4 struct {
-	NumberA int    `fixed:"0-5"`
-	NumberB int    `fixed:"5-10"`
-	StringC string `fixed:"10-15"`
-	StringD string `fixed:"20-40"` // There is a gap of 5 columns between StringC and StringD (15-20)
+	NumberA        int    `fixed:"0-5"`
+	NumberB        int    `fixed:"5-10"`
+	StringC        string `fixed:"10-15"`
+	StringD        string `fixed:"20-40"` // There is a gap of 5 columns between StringC and StringD (15-20)
+	Length         int
+	ExpectedResult string
 }
 
 // Basic struct with overlap. Should only fail if the contested columns are not consistently defined.
 type testStruct5 struct {
-	NumberA int    `fixed:"0-5"`
-	NumberB int    `fixed:"5-10"`
-	StringC string `fixed:"10-15"`
-	StringD string `fixed:"12-35"` // There is an overlap in pos. 12-15 between StringC and StringD
+	NumberA        int    `fixed:"0-5"`
+	NumberB        int    `fixed:"5-10"`
+	StringC        string `fixed:"10-15"`
+	StringD        string `fixed:"12-35"` // There is an overlap in pos. 12-15 between StringC and StringD
+	Length         int
+	ExpectedResult string
 }
 
 type embeddedStruct struct {
@@ -60,6 +69,8 @@ type testStruct6 struct {
 	AdditionalField3 string      `fixed:"42-47"`
 	AdditionalField4 string      `fixed:"47-50"`
 	embeddedStruct
+	Length         int
+	ExpectedResult string
 }
 
 // Struct with invalid index. Should fail.
@@ -112,20 +123,52 @@ func TestLineLength(t *testing.T) {
 }
 
 func TestMarshal(t *testing.T) {
-	var out string
-	expectedOut := "0012312345ohmy What's happening?  "
 	t1 := testStruct1{
-		NumberA: 123,                 // `fixed:"0-5"`
-		NumberB: 12345,               // `fixed:"5-10"`
-		StringC: "ohmy",              // `fixed:"10-15"`
-		StringD: "What's happening?", // `fixed:"15-35"`
+		NumberA:        123,                                   // `fixed:"0-5"`
+		NumberB:        12345,                                 // `fixed:"5-10"`
+		StringC:        "ohmy",                                // `fixed:"10-15"`
+		StringD:        "What's happening?",                   // `fixed:"15-35"`
+		ExpectedResult: "0012312345ohmy What's happening?   ", // no tag
 	}
-	err := Marshal(t1, out)
+	out1, err := Marshal(t1)
 	if err != nil {
 		t.Errorf("Error while marshaling the test struct 1: %v\n", err)
 	}
-	log.Println(out)
-	if out != expectedOut {
-		t.Errorf("Marshalled string doesn't match the expected output:\n%v\n", out)
+	if out1 != t1.ExpectedResult {
+		t.Errorf("Marshalled string doesn't match the expected output:\n'%v'\n", out1)
+	}
+
+	t2 := testStruct2{
+		StringD:        "Some more text 12345", // `fixed:"15-35"`
+		NumberA:        12345,                  // `fixed:"0-5"`
+		StringC:        "AND",                  // `fixed:"10-15"`
+		NumberB:        67890,                  // `fixed:"5-10"`
+		Length:         35,
+		ExpectedResult: "1234567890AND  Some more text 12345",
+	}
+	out2, err := Marshal(t2)
+	if err != nil {
+		t.Errorf("Error while marshaling the test struct 2: %v\n", err)
+	}
+	if out2 != t2.ExpectedResult {
+		t.Errorf("Marshalled string doesn't match the expected output:\n'%v'\n", out2)
+	}
+
+	date3, _ := time.Parse("2006-01-02", "1984-10-31")
+	t3 := testStruct3{
+		Uno:            "just atext",                                         // string    `fixed:"0-10"`
+		Due:            1234567890,                                           // int       `fixed:"10-20"`
+		Tre:            date3,                                                // time.Time `fixed:"20-30,2015-10-31"`
+		Quattro:        "anotherStr",                                         // string    `fixed:"30-40"`
+		Cinque:         321.458,                                              // float32   `fixed:"40-50,2"`
+		Length:         50,                                                   // int
+		ExpectedResult: "just atext12345678901984-10-31anotherStr0000321.46", // string
+	}
+	out3, err := Marshal(t3)
+	if err != nil {
+		t.Errorf("Error while marshaling the test struct 3: %v\n", err)
+	}
+	if out3 != t3.ExpectedResult {
+		t.Errorf("Marshalled string doesn't match the expected output:\n'%v'\n", out3)
 	}
 }
