@@ -143,12 +143,8 @@ func Marshal(v interface{}) (string, error) {
 				if len(cFormat) != fieldLength {
 					log.Println("cFormat for this time.Time object doesn't match the field length") // Maybe this kind of parsing error check should be done elsewhere
 				}
-				/*
-					outstring:=time.Parse(cFormat, val.Field(i))
-						fmt.Println("PIJATI QUESTA", val.Field(i))
-						//outstring := reflect.ValueOf(v).Field(i).
-							out.WriteString(val.Field(i).Format(cFormat))
-				*/
+				outstring := reflect.ValueOf(v).Field(i).Interface().(time.Time).Format(cFormat)
+				line.WriteString(outstring, b, e)
 			} else {
 
 				// Handle embedded objects by recursively parsing
