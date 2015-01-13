@@ -4,7 +4,6 @@
 [![GoDoc](https://godoc.org/github.com/qrawl/gofixedlength?status.png)](https://godoc.org/github.com/qrawl/gofixedlength)
 
 Go library to deal with extracting fixed field form values using struct tags.  
-This is a fork of [@jbuchbinder](https://github.com/jbuchbinder)'s GOFIXEDFIELD. The only noticeable change is that I prefer zero-based character count.
 
 ##Quickstart
 
@@ -59,3 +58,5 @@ To parse documents that use a comma "," instead of the decimal point, just set t
 	func init() {
 		gofixedlength.DECIMAL_COMMA = true
 	}
+
+GoFixedLength is based on [@jbuchbinder](https://github.com/jbuchbinder)'s GOFIXEDFIELD.
