@@ -102,7 +102,7 @@ func Unmarshal(data string, v interface{}) error {
 			break
 		case reflect.String:
 			fmt.Printf("Found string value '%s'\n", s) // Debug code
-			val.Field(i).SetString(s)
+			val.Field(i).SetString(strings.TrimRight(s, " "))
 			break
 		case reflect.Int8:
 			fmt.Printf("Found value '%s'\n", s) // Debug code
