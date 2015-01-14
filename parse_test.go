@@ -2,11 +2,12 @@ package gofixedlength
 
 import (
 	"testing"
+	"time"
 )
 
 const (
-	basicParseTestString   = "1234567890ABCDEFGHIJ"
-	layeredParseTestString = "20091010EX"
+	basicParseTestString = "1234567890ABCDEFGHIJ"
+	dateParseTestString  = "20150114EX"
 )
 
 type basicParseTest struct {
@@ -16,15 +17,9 @@ type basicParseTest struct {
 	StringD string `fixed:"29-35"` // should fail
 }
 
-type layeredParseTest struct {
-	DateField   *dateStruct `fixed:"0-8"`
-	StringAfter string      `fixed:"8-10"`
-}
-
-type dateStruct struct {
-	Y int `fixed:"0-4"`
-	M int `fixed:"4-6"`
-	D int `fixed:"6-8"`
+type dateParseTest struct {
+	DateField   time.Time `fixed:"0-8,20060102"`
+	StringAfter string    `fixed:"8-10"`
 }
 
 func TestBasicParsing(t *testing.T) {
@@ -47,18 +42,12 @@ func TestBasicParsing(t *testing.T) {
 
 func TestLayeredParsing(t *testing.T) {
 	t.Log("Layered parsing test")
-	var out layeredParseTest
-	Unmarshal(layeredParseTestString, &out)
+	var out dateParseTest
+	Unmarshal(dateParseTestString, &out)
 	if out.StringAfter != "EX" {
 		t.Errorf("Failed to parse after embedded struct/ptr\n")
 	}
-	if out.DateField.Y != 2009 {
-		t.Errorf("Failed to parse embedded Y (Y=%d)\n", out.DateField.Y)
-	}
-	if out.DateField.M != 10 {
-		t.Errorf("Failed to parse embedded M (M=%d)\n", out.DateField.M)
-	}
-	if out.DateField.D != 10 {
-		t.Errorf("Failed to parse embedded D (D=%d)\n", out.DateField.D)
+	if expectedTime, err := time.Parse("2006-01-02", "2015-01-14"); err != nil || out.DateField != expectedTime {
+		t.Errorf("Failed to parse date (%d)\n", out.DateField)
 	}
 }
