@@ -26,7 +26,7 @@ import (
 //
 // String offsets are zero based.
 func Unmarshal(data string, v interface{}) error {
-	//debugStruct(v) // Debug code
+	// debugStruct(v) // Debug code
 	var val reflect.Value
 	if reflect.TypeOf(v).Name() != "" {
 		val = reflect.ValueOf(v)
@@ -34,7 +34,7 @@ func Unmarshal(data string, v interface{}) error {
 		val = reflect.ValueOf(v).Elem()
 	}
 
-	//fmt.Printf("Found %d fields\n", val.NumField()) // Debug code
+	// fmt.Printf("Found %d fields\n", val.NumField()) // Debug code
 	for i := 0; i < val.NumField(); i++ {
 		typeField := val.Type().Field(i)
 		tag := typeField.Tag
@@ -49,7 +49,7 @@ func Unmarshal(data string, v interface{}) error {
 
 		if len(cBookend) != 2 {
 			// If we don't have two values, skip
-			//fmt.Println("Two tag values not found") // Debug code
+			// fmt.Println("Two tag values not found") // Debug code
 			continue
 		}
 
@@ -61,19 +61,19 @@ func Unmarshal(data string, v interface{}) error {
 
 		// Sanity check range before dying miserably
 		if b < 0 || e > len(data) {
-			//fmt.Printf("Failed sanity check for b = %d, e = %d, len(data) = %d\n", b, e, len(data)) // Debug code
+			// fmt.Printf("Failed sanity check for b = %d, e = %d, len(data) = %d\n", b, e, len(data)) // Debug code
 			continue
 		}
 
 		s := data[b:e]
 
-		//fmt.Printf("Field found of type %s\n", typeField.Type.Kind()) // Debug code
+		// fmt.Printf("Field found of type %s\n", typeField.Type.Kind()) // Debug code
 
 		switch typeField.Type.Kind() {
 		case reflect.Bool:
 			v, err := strconv.ParseBool(s)
 			if err != nil {
-				//fmt.Println(err.Error()) // Debug code
+				// fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetBool(v)
@@ -84,7 +84,7 @@ func Unmarshal(data string, v interface{}) error {
 			}
 			v, err := strconv.ParseFloat(s, 32)
 			if err != nil {
-				//fmt.Println(err.Error()) // Debug code
+				// fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetFloat(v)
@@ -95,26 +95,26 @@ func Unmarshal(data string, v interface{}) error {
 			}
 			v, err := strconv.ParseFloat(s, 64)
 			if err != nil {
-				fmt.Println(err.Error()) // Debug code
+				// fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetFloat(v)
 			break
 		case reflect.String:
-			fmt.Printf("Found string value '%s'\n", s) // Debug code
+			// fmt.Printf("Found string value '%s'\n", s) // Debug code
 			val.Field(i).SetString(strings.TrimRight(s, " "))
 			break
 		case reflect.Int8:
-			fmt.Printf("Found value '%s'\n", s) // Debug code
+			// fmt.Printf("Found value '%s'\n", s) // Debug code
 			v, err := strconv.ParseInt(s, 10, 8)
 			if err != nil {
-				fmt.Println(err.Error()) // Debug code
+				// fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetInt(v)
 			break
 		case reflect.Int32:
-			fmt.Printf("Found value '%s'\n", s) // Debug code
+			// fmt.Printf("Found value '%s'\n", s) // Debug code
 			v, err := strconv.ParseInt(s, 10, 32)
 			if err != nil {
 				fmt.Println(err.Error())
@@ -123,19 +123,19 @@ func Unmarshal(data string, v interface{}) error {
 			val.Field(i).SetInt(v)
 			break
 		case reflect.Int, reflect.Int64:
-			fmt.Printf("Found value '%s'\n", s) // Debug code
+			// fmt.Printf("Found value '%s'\n", s) // Debug code
 			v, err := strconv.ParseInt(s, 10, 64)
 			if err != nil {
-				fmt.Println(err.Error()) // Debug code
+				// fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetInt(v)
 			break
 		case reflect.Uint:
-			fmt.Printf("Found uint value '%s'\n", s) // Debug code
+			// fmt.Printf("Found uint value '%s'\n", s) // Debug code
 			v, err := strconv.ParseUint(s, 10, 64)
 			if err != nil {
-				//fmt.Println(err.Error()) // Debug code
+				// fmt.Println(err.Error()) // Debug code
 				continue
 			}
 			val.Field(i).SetUint(v)
@@ -146,13 +146,13 @@ func Unmarshal(data string, v interface{}) error {
 			if typeField.Type == reflect.TypeOf(time.Time{}) {
 				timeObject, err := time.Parse(cFormat, s)
 				if err != nil {
-					fmt.Println(err.Error()) // Debug code
+					// fmt.Println(err.Error()) // Debug code
 					continue
 				}
 				// How to store this time.Time object?
 				val.Field(i).Set(reflect.ValueOf(timeObject))
 			} else {
-				fmt.Printf("Found ptr/str value '%s'\n", s) // Debug code
+				// fmt.Printf("Found ptr/str value '%s'\n", s) // Debug code
 
 				// Handle embedded objects by recursively parsing
 				// the object with the range we passed.
@@ -162,12 +162,12 @@ func Unmarshal(data string, v interface{}) error {
 				}
 				err := Unmarshal(s, val.Field(i).Interface())
 				if err != nil {
-					fmt.Println(err.Error()) // Debug code
+					// fmt.Println(err.Error()) // Debug code
 				}
 			}
 			break
 		default:
-			fmt.Println("Found unknown value '%s'", s) // Debug code
+			// fmt.Println("Found unknown value '%s'", s) // Debug code
 			break
 		}
 	}
