@@ -21,7 +21,7 @@ resemble:
 	}
 
 	var out SomeType
-	err := Unmarshal("some string here", &out)
+	err := gofixedlength.Unmarshal("some string here", &out)
 
 **Marshal** marshals struct data into a fixed-lenght formatted string.
 
@@ -40,20 +40,20 @@ resemble:
 	}
 
 	var out string
-	err := Marshal(myStruct)
+	err := gofixedlength.Marshal(myStruct)
 	// out == "this      00000123452015-01-14000123.123"
 
 String offsets are zero based.  
 Field filling is based on data type: for text types it will be spaces,
 while numbers will be right-aligned and filled with zeroes.  
-Floating point-values are printed with the specified number of decimals (two by default).  
-time.Time fields are printed in the specified layout.
+Floating-point values are printed with the specified number of decimals (two by default).  
+`time.Time` fields are printed with the specified layout.
 
 
 String offsets are zero based.
 
 ##European-styled numbers
-To parse documents that use a comma "," instead of the decimal point, just set to `true` the corresponding global variable:
+To parse documents that use comma "," as decimal separator, just set to `true` the global variable:
 
 	func init() {
 		gofixedlength.DECIMAL_COMMA = true
