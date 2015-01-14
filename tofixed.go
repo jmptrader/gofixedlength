@@ -36,8 +36,7 @@ type Line []rune
 //		123.1234,
 //	}
 //
-//	var out string
-//	err := Marshal(myStruct)
+//	out, err := Marshal(myStruct)
 //	// out == "this      00000123452015-01-14000123.123"
 //
 // String offsets are zero based.
