@@ -107,7 +107,7 @@ func Marshal(v interface{}) (string, error) {
 			}
 			integerPartLength := fieldLength - 1 - decimals
 			integerPart := int(reflect.ValueOf(v).Field(i).Float())
-			if integerPart >= Pow(integerPartLength, 10) {
+			if integerPart >= pow(integerPartLength, 10) {
 				log.Printf("This float number (%v) seems to be too big for output length (%v).\n", integerPart, integerPartLength)
 			}
 			format := fmt.Sprintf("%%0%d.%df", fieldLength, decimals)
@@ -170,7 +170,7 @@ func Marshal(v interface{}) (string, error) {
 	return line.String(), nil
 }
 
-func Pow(a, b int) int {
+func pow(a, b int) int {
 	var c int
 	c = 1
 	for i := 0; i < b; i++ {
