@@ -32,7 +32,7 @@ type Line []rune
 //	myStruct := SomeType{
 //		"this",
 //		12345,
-//		"2015-01-14",
+//		time.Now(),
 //		123.1234,
 //	}
 //
