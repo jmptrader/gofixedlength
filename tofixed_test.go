@@ -9,6 +9,7 @@ import (
 type Tester interface {
 	Length() int
 	ExpectedResult() string
+	ExpectedErr() error
 }
 
 // Basic struct, valid
@@ -19,10 +20,12 @@ type testStruct1 struct {
 	StringD        string `fixed:"15-35"`
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testStruct1) Length() int            { return t.length }
 func (t testStruct1) ExpectedResult() string { return t.expectedResult }
+func (t testStruct1) ExpectedErr() error     { return t.expectedErr }
 
 // Basic struct, fields randomized, valid
 type testStruct2 struct {
@@ -32,10 +35,12 @@ type testStruct2 struct {
 	NumberB        int    `fixed:"5-10"`
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testStruct2) Length() int            { return t.length }
 func (t testStruct2) ExpectedResult() string { return t.expectedResult }
+func (t testStruct2) ExpectedErr() error     { return t.expectedErr }
 
 // Struct containing formatted date and float, valid
 type testStruct3 struct {
@@ -46,10 +51,12 @@ type testStruct3 struct {
 	Cinque         float32   `fixed:"40-50,2"`
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testStruct3) Length() int            { return t.length }
 func (t testStruct3) ExpectedResult() string { return t.expectedResult }
+func (t testStruct3) ExpectedErr() error     { return t.expectedErr }
 
 // Basic struct with holes, valid
 type testStruct4 struct {
@@ -59,23 +66,27 @@ type testStruct4 struct {
 	StringD        string `fixed:"20-40"` // There is a gap of 5 columns between StringC and StringD (15-20)
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testStruct4) Length() int            { return t.length }
 func (t testStruct4) ExpectedResult() string { return t.expectedResult }
+func (t testStruct4) ExpectedErr() error     { return t.expectedErr }
 
 // Basic struct with overlap. Should only fail if the contested columns are not consistently defined.
 type testStruct5 struct {
 	NumberA        int    `fixed:"0-5"`
 	NumberB        int    `fixed:"5-10"`
 	StringC        string `fixed:"10-15"`
-	StringD        string `fixed:"12-21"` // There is an overlap in pos. 12-15 between StringC and StringD
+	StringD        string `fixed:"12-22"` // There is an overlap in pos. 12-15 between StringC and StringD
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testStruct5) Length() int            { return t.length }
 func (t testStruct5) ExpectedResult() string { return t.expectedResult }
+func (t testStruct5) ExpectedErr() error     { return t.expectedErr }
 
 type embeddedStruct struct {
 	Another    string `fixed:"50-60"`
@@ -84,18 +95,20 @@ type embeddedStruct struct {
 
 // Embedded struct, valid
 type testStruct6 struct {
-	Embedded1        testStruct1 // Basic struct, valid
-	AdditionalField1 int         `fixed:"35-40"`
-	AdditionalField2 int         `fixed:"40-42"`
-	AdditionalField3 string      `fixed:"42-47"`
-	AdditionalField4 string      `fixed:"47-50"`
+	Embedded1     testStruct1 // Basic struct, valid
+	AnotherField1 int         `fixed:"35-40"`
+	AnotherField2 int         `fixed:"40-42"`
+	AnotherField3 string      `fixed:"42-47"`
+	AnotherField4 string      `fixed:"47-50"`
 	embeddedStruct
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testStruct6) Length() int            { return t.length }
 func (t testStruct6) ExpectedResult() string { return t.expectedResult }
+func (t testStruct6) ExpectedErr() error     { return t.expectedErr }
 
 // Struct with invalid index. Should fail.
 type testFailingStruct1 struct {
@@ -103,10 +116,12 @@ type testFailingStruct1 struct {
 	Due            int    `fixed:"10-9"`
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testFailingStruct1) Length() int            { return t.length }
 func (t testFailingStruct1) ExpectedResult() string { return t.expectedResult }
+func (t testFailingStruct1) ExpectedErr() error     { return t.expectedErr }
 
 // Struct with invalid index. Should fail.
 type testFailingStruct2 struct {
@@ -114,10 +129,12 @@ type testFailingStruct2 struct {
 	Due            int    `fixed:"10-"`
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testFailingStruct2) Length() int            { return t.length }
 func (t testFailingStruct2) ExpectedResult() string { return t.expectedResult }
+func (t testFailingStruct2) ExpectedErr() error     { return t.expectedErr }
 
 // Struct with invalid index. Should fail.
 type testFailingStruct3 struct {
@@ -125,24 +142,28 @@ type testFailingStruct3 struct {
 	Due            int    `fixed:"-20"`
 	length         int
 	expectedResult string
+	expectedErr    error
 }
 
 func (t testFailingStruct3) Length() int            { return t.length }
 func (t testFailingStruct3) ExpectedResult() string { return t.expectedResult }
+func (t testFailingStruct3) ExpectedErr() error     { return t.expectedErr }
 
 // Embedded struct with fixed length (shorter than embedded struct's length). Should fail.
 type testFailingStruct4 struct {
-	EmbeddedStruct   testStruct1 `fixed:"0-30"` // Basic struct, valid
-	AdditionalField1 int         `fixed:"30-40"`
-	AdditionalField2 int         `fixed:"40-42"`
-	AdditionalField3 string      `fixed:"42-47"`
-	AdditionalField4 string      `fixed:"47-50"`
-	length           int
-	expectedResult   string
+	EmbeddedStruct testStruct1 `fixed:"0-30"` // Basic struct, valid
+	AnotherField1  int         `fixed:"30-40"`
+	AnotherField2  int         `fixed:"40-42"`
+	AnotherField3  string      `fixed:"42-47"`
+	AnotherField4  string      `fixed:"47-50"`
+	length         int
+	expectedResult string
+	expectedErr    error
 }
 
 func (t testFailingStruct4) Length() int            { return t.length }
 func (t testFailingStruct4) ExpectedResult() string { return t.expectedResult }
+func (t testFailingStruct4) ExpectedErr() error     { return t.expectedErr }
 
 var (
 	timeObject = time.Now()
@@ -184,9 +205,17 @@ var (
 			NumberA:        123,         // int    `fixed:"0-5"`
 			NumberB:        0,           // int    `fixed:"5-10"`
 			StringC:        "overl",     // string `fixed:"10-15"`
-			StringD:        "erlapping", // string `fixed:"12-21"` // There is an overlap in pos. 12-15 between StringC and StringD
-			length:         21,
-			expectedResult: "0012300000overlapping",
+			StringD:        "erlapping", // string `fixed:"12-22"` // There is an overlap in pos. 12-15 between StringC and StringD
+			length:         22,
+			expectedResult: "0012300000overlapping ",
+		},
+		testStruct5{
+			NumberA:     123,          // int    `fixed:"0-5"`
+			NumberB:     0,            // int    `fixed:"5-10"`
+			StringC:     "overl",      // string `fixed:"10-15"`
+			StringD:     "ER THE TOP", // string `fixed:"12-22"` // There is an overlap in pos. 12-15 between StringC and StringD
+			length:      22,
+			expectedErr: ErrIncoherentOverlap,
 		},
 	}
 )
@@ -204,10 +233,14 @@ func TestMarshal(t *testing.T) {
 	t.Log("Marshaller test")
 	for i, target := range TestSuite {
 		out, err := Marshal(target)
-		if err != nil {
-			t.Errorf("Error while marshaling the test struct no.%v: %v\n", i+1, err)
+		if err != target.ExpectedErr() {
+			if err != nil {
+				t.Errorf("Error while marshaling the test struct no.%v: %v\n", i+1, err)
+			} else {
+				t.Errorf("Struct no.%v should have failed and passed instead, resulting: %v\n", i+1, out)
+			}
 		}
-		if out != target.ExpectedResult() {
+		if err == nil && out != target.ExpectedResult() {
 			t.Errorf("Marshalled string no.%v doesn't match the expected output:\n'%v'\n", i+1, out)
 		}
 	}
