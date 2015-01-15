@@ -166,6 +166,12 @@ func Marshal(v interface{}) (string, error) {
 			break
 		}
 	}
+	// Empty runes are changed to space charcter (test no.4)
+	for i, r := range line {
+		if r == 0 {
+			line[i] = ' '
+		}
+	}
 	return line.String(), nil
 }
 

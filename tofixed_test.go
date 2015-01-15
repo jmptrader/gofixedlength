@@ -123,6 +123,7 @@ func TestLineLength(t *testing.T) {
 }
 
 func TestMarshal(t *testing.T) {
+	t.Log("Marshaller test")
 	t1 := testStruct1{
 		NumberA:        123,                                   // `fixed:"0-5"`
 		NumberB:        12345,                                 // `fixed:"5-10"`
@@ -170,5 +171,21 @@ func TestMarshal(t *testing.T) {
 	}
 	if out3 != t3.ExpectedResult {
 		t.Errorf("Marshalled string doesn't match the expected output:\n'%v'\n", out3)
+	}
+
+	t4 := testStruct4{
+		NumberA:        12345,                                      // int    `fixed:"0-5"`
+		NumberB:        67890,                                      // int    `fixed:"5-10"`
+		StringC:        "short",                                    // string `fixed:"10-15"`
+		StringD:        "and then some       ",                     // string `fixed:"20-40"` // There is a gap of 5 columns between StringC and StringD (15-20)
+		Length:         40,                                         // int
+		ExpectedResult: "1234567890short     and then some       ", // string
+	}
+	out4, err := Marshal(t4)
+	if err != nil {
+		t.Errorf("Error while marshaling the test struct 4: %v\n", err)
+	}
+	if out4 != t4.ExpectedResult {
+		t.Errorf("Marshalled string doesn't match the expected output:\n'%v'\n", out4)
 	}
 }
