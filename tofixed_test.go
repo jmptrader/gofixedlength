@@ -245,3 +245,27 @@ func TestMarshal(t *testing.T) {
 		}
 	}
 }
+
+func TestMarshalWithComma(t *testing.T) {
+	previousValue := DECIMAL_COMMA
+	DECIMAL_COMMA = true
+	defer func() { DECIMAL_COMMA = previousValue }()
+	t.Log("Marshaller test with comma")
+	testStruct := testStruct3{
+		Uno:            "just atext", // string    `fixed:"0-10"`
+		Due:            1234567890,   // int       `fixed:"10-20"`
+		Tre:            timeObject,   // time.Time `fixed:"20-30,2006-01-02"`
+		Quattro:        "anotherStr", // string    `fixed:"30-40"`
+		Cinque:         321.458,      // float32   `fixed:"40-50,2"`
+		length:         50,
+		expectedResult: fmt.Sprintf("just atext1234567890%vanotherStr0000321,46", timeObject.Format("2006-01-02")),
+	}
+
+	out, err := Marshal(testStruct)
+	if err != nil {
+		t.Errorf("Error while marshaling the comma test struct: %v\n", err)
+	}
+	if err == nil && out != testStruct.ExpectedResult() {
+		t.Errorf("Marshalled comma string doesn't match the expected output:\n'%v'\n", out)
+	}
+}
