@@ -58,4 +58,4 @@ To parse documents that use comma "," as decimal separator, just set to `true` t
 		gofixedlength.DECIMAL_COMMA = true
 	}
 
-GoFixedLength is based on [@jbuchbinder](https://github.com/jbuchbinder)'s GOFIXEDFIELD.
+GoFixedLength is based on @jbuchbinder's [Gofixedfield](https://github.com/jbuchbinder/gofixedfield).
