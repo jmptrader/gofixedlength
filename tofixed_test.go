@@ -48,7 +48,7 @@ type testStruct3 struct {
 	Due            int       `fixed:"10-20"`
 	Tre            time.Time `fixed:"20-30,2006-01-02"`
 	Quattro        string    `fixed:"30-40"`
-	Cinque         float32   `fixed:"40-50,2"`
+	Cinque         float64   `fixed:"40-50,2"`
 	length         int
 	expectedResult string
 	expectedErr    error
@@ -189,7 +189,7 @@ var (
 			Due:            1234567890,   // int       `fixed:"10-20"`
 			Tre:            timeObject,   // time.Time `fixed:"20-30,2006-01-02"`
 			Quattro:        "anotherStr", // string    `fixed:"30-40"`
-			Cinque:         321.458,      // float32   `fixed:"40-50,2"`
+			Cinque:         321.458,      // float64   `fixed:"40-50,2"`
 			length:         50,           // int
 			expectedResult: fmt.Sprintf("just atext1234567890%vanotherStr0000321.46", timeObject.Format("2006-01-02")),
 		},
@@ -256,7 +256,7 @@ func TestMarshalWithComma(t *testing.T) {
 		Due:            1234567890,   // int       `fixed:"10-20"`
 		Tre:            timeObject,   // time.Time `fixed:"20-30,2006-01-02"`
 		Quattro:        "anotherStr", // string    `fixed:"30-40"`
-		Cinque:         321.458,      // float32   `fixed:"40-50,2"`
+		Cinque:         321.458,      // float64   `fixed:"40-50,2"`
 		length:         50,
 		expectedResult: fmt.Sprintf("just atext1234567890%vanotherStr0000321,46", timeObject.Format("2006-01-02")),
 	}

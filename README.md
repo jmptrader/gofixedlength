@@ -29,7 +29,7 @@ resemble:
  		ValA string        `fixed:"0-10"`
 		ValB int           `fixed:"10-20"`
 		ValC time.Time     `fixed:"20-30,2006-01-02"`
-		ValD float         `fixed:"30-40,3"`
+		ValD float64       `fixed:"30-40,3"`
  	}
 
 	myStruct := SomeType{
