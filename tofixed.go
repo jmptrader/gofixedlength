@@ -25,8 +25,8 @@ type Line []rune
 // 	type SomeType struct {
 // 		ValA string        `fixed:"0-10"`
 //		ValB int           `fixed:"10-20"`
-//		ValC time.Time     `fixed:"20-30,2006-01-02"`
-//		ValD float64       `fixed:"30-40,3"`
+//		ValC time.Time     `fixed:"20-30,2006-01-02"` // Standard Go time formatting
+//		ValD float64       `fixed:"30-40,3"`          // Three decimals
 // 	}
 //
 //	myStruct := SomeType{
