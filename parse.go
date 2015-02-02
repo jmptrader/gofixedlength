@@ -12,19 +12,15 @@ import (
 // resemble:
 //
 // 	type SomeType struct {
-// 		ValA string        `fixed:"0-5"`
-//		ValB int           `fixed:"9-15"`
-//		ValC *EmbeddedType `fixed:"15-22"`
-// 	}
-//	type EmbeddedType struct {
-//		ValX string `fixed:"0-3"`
-//		ValY string `fixed:"3-6"`
-//	}
+// 		DateField   time.Time `fixed:"0-8,20060102"` // Standard Go time formatting
+// 		StringAfter string    `fixed:"8-15"`
+// 		SomeFloat   float64   `fixed:"15-25,4"`      // Four decimals
+//  }
 //
 //	var out SomeType
-//	err := Unmarshal("some string here", &out)
+//	err := Unmarshal("20150202well   00012.1864", &out)
 //
-// String offsets are zero based.
+// Offsets are zero based.
 func Unmarshal(data string, v interface{}) error {
 	// debugStruct(v) // Debug code
 	var val reflect.Value

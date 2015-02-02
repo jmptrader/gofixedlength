@@ -39,7 +39,7 @@ type Line []rune
 //	out, err := Marshal(myStruct)
 //	// out == "this      00000123452015-01-14000123.123"
 //
-// String offsets are zero based.
+// Offsets are zero based.
 // Field filling is based on data type: for text types it will be spaces,
 // while numbers will be right-aligned and filled with zeroes.
 // Floating point-values are printed with the specified number of decimals (two by default).
